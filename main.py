@@ -4,6 +4,7 @@ from datetime import datetime
 from flask_cors import CORS
 import pymongo
 from backend.projectionCountUpdated import projectionCount
+from backend.policyTree import tree_to_list_format, build_tree
 
 app = Flask(__name__)
 CORS(app)
@@ -64,7 +65,7 @@ def handle_exception(err):
 
 # @app.route("/get_policy_tree", methods=["GET"])
 # def get_policy_tree():
-#     return jsonify(PolicyTree.tree_to_list_format(PolicyTree.build_tree(data)))
+#     return jsonify(tree_to_list_format(build_tree(data)))
 
 
 # @app.route("/givenTime", methods=["POST"])

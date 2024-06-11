@@ -4,6 +4,8 @@ import datetime
 from datetime import datetime
 import math
 
+from backend.RecentValidTimestamp import getValidTimestamps 
+
 
 app = Flask(__name__)
 
@@ -132,8 +134,12 @@ def projectionCount(data, givenTime):
                 count = math.ceil((givenTimeMin - totalExpireMinutes)/ convertTimeMinutes(schedule["backupFrequency"]))
                 scheduleCount['Active'][protectType][schedule['scheduleName']] = count
    
-                     
     print(json.dumps(scheduleCount, indent=4))
+    res = getValidTimestamps(data=data, given_time=givenTime, scheduleCount=scheduleCount)
+    scheduleCount['CostAndSize'] = res
+    # print(scheduleCount['CostAndSize'])
+    
+    # print(json.dumps(scheduleCount, indent=4))
     return scheduleCount
 
 

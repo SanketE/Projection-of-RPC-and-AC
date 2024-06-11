@@ -1,4 +1,6 @@
 pymongo
 xgboost
 flask_cors
-pickle
+pickleshare
+flask
+pandas
