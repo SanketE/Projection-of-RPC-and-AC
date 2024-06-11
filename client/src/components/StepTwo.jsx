@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AddSchedule from './AddSchedule';
+import AddSchedule2 from './AddSchedule2';
+import AddSchedule3 from './AddSchedule3';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -117,6 +119,13 @@ const StepTwo = ({ setTotal }) => {
   const [arraySchedules, setArraySchedules] = useState([]);
   const [onPremisesSchedules, setOnPremisesSchedules] = useState([]);
   const [cloudStoreSchedules, setCloudStoreSchedules] = useState([]);
+  const [count_snap, setCount_snap] = useState(0);
+  const [count_onprim, setCount_onprim] = useState(0);
+  const [count_cloud, setCount_cloud] = useState(0);
+
+
+
+
 
   useEffect(() => {
     setTotal(prevTotal => ({
@@ -128,6 +137,7 @@ const StepTwo = ({ setTotal }) => {
   }, [arraySchedules, onPremisesSchedules, cloudStoreSchedules, setTotal]);
 
   const handleSave = (data, storeType) => {
+
     const formattedData = data;
     switch (storeType) {
       case 'array':
@@ -154,6 +164,19 @@ const StepTwo = ({ setTotal }) => {
     setShowCloudStore(false);
   };
 
+  const handleAddArraySchedule1 = () => {
+    setCount_snap(prevCount => prevCount + 1); // Increment count
+    setShowArray(true);
+  };
+  const handleAddArraySchedule2 = () => {
+    setCount_onprim(prevCount => prevCount + 1); // Increment count
+    setShowOnPremises(true);
+  };
+  const handleAddArraySchedule3 = () => {
+    setCount_cloud(prevCount => prevCount + 1); // Increment count
+    setShowCloudStore(true);
+  };
+
   return (
     <Container>
       <div className="overlaps-form-container">
@@ -164,18 +187,20 @@ const StepTwo = ({ setTotal }) => {
 
             <div className="schedule-container">
               <h2>Array Snapshots</h2>
-              <button onClick={() => setShowArray(true)}>+ Add Schedule</button>
+              <button onClick={handleAddArraySchedule1}>+ Add Schedule</button>
 
               {showArray && (
-                <AddSchedule onSave={(data) => handleSave(data, 'array')} onCancel={handleCancel} />
+                <AddSchedule count={count_snap + count_onprim + count_cloud} onSave={(data) => handleSave(data, 'array')} onCancel={handleCancel} />
+
               )}
+
               {arraySchedules.length > 0 && (
                 <div>
                   <p>All Array Schedules:</p>
                   {arraySchedules.map((schedule, index) => (
                     <p key={index}>
-                      {`${schedule.frequency} | Every ${schedule.backupFrequency.value} ${schedule.backupFrequency.unit
-                        } between ${schedule.timeRangeStart} to ${schedule.timeRangeEnd}, Retain For: ${schedule.retainFor.value
+                      {`Every ${schedule.backupFrequency.value} ${schedule.backupFrequency.unit
+                        } , Start-After: ${schedule.StartAfter} , Retain For: ${schedule.retainFor.value
                         } ${schedule.retainFor.unit}`}
                     </p>
                   ))}
@@ -183,18 +208,18 @@ const StepTwo = ({ setTotal }) => {
               )}
 
               <h2>On-Premises Protection Store</h2>
-              <button onClick={() => setShowOnPremises(true)}>+ Add Schedule</button>
+              <button onClick={handleAddArraySchedule2}>+ Add Schedule</button>
 
               {showOnPremises && (
-                <AddSchedule onSave={(data) => handleSave(data, 'onPremises')} onCancel={handleCancel} />
+                <AddSchedule2 count={count_snap + count_onprim + count_cloud} onSave={(data) => handleSave(data, 'onPremises')} onCancel={handleCancel} count_onprim={count_snap} />
               )}
               {onPremisesSchedules.length > 0 && (
                 <div>
                   <p>All On-Premises Schedules:</p>
                   {onPremisesSchedules.map((schedule, index) => (
                     <p key={index}>
-                      {`${schedule.frequency} | Every ${schedule.backupFrequency.value} ${schedule.backupFrequency.unit
-                        } between ${schedule.timeRangeStart} to ${schedule.timeRangeEnd}, Retain For: ${schedule.retainFor.value
+                      {`Every ${schedule.backupFrequency.value} ${schedule.backupFrequency.unit
+                        } , Start-After: ${schedule.StartAfter} , Retain For: ${schedule.retainFor.value
                         } ${schedule.retainFor.unit}`}
                     </p>
                   ))}
@@ -202,18 +227,18 @@ const StepTwo = ({ setTotal }) => {
               )}
 
               <h2>HPE Cloud Store</h2>
-              <button onClick={() => setShowCloudStore(true)}>+ Add Schedule</button>
+              <button onClick={handleAddArraySchedule3}>+ Add Schedule</button>
 
               {showCloudStore && (
-                <AddSchedule onSave={(data) => handleSave(data, 'cloudStore')} onCancel={handleCancel} />
+                <AddSchedule3 count={count_snap + count_onprim + count_cloud} onSave={(data) => handleSave(data, 'cloudStore')} onCancel={handleCancel} count_cloud={count_onprim + count_snap} />
               )}
               {cloudStoreSchedules.length > 0 && (
                 <div>
                   <p>All Cloud Store Schedules:</p>
                   {cloudStoreSchedules.map((schedule, index) => (
                     <p key={index}>
-                      {`${schedule.frequency} | Every ${schedule.backupFrequency.value} ${schedule.backupFrequency.unit
-                        } between ${schedule.timeRangeStart} to ${schedule.timeRangeEnd}, Retain For: ${schedule.retainFor.value
+                      {`Every ${schedule.backupFrequency.value} ${schedule.backupFrequency.unit
+                        } , Start-After ${schedule.StartAfter} , Retain For: ${schedule.retainFor.value
                         } ${schedule.retainFor.unit}`}
                     </p>
                   ))}

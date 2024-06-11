@@ -1,31 +1,33 @@
 import React, { useState } from 'react';
 
 
-const AddSchedule = ({ onSave,onCancel}) => {
-    const [frequency, setFrequency] = useState('Hourly');
+const AddSchedule = ({ count,onSave,onCancel}) => {
+    const [scheduleId] = useState(count)
+    const [scheduleName ] = useState(`Array_Snapshot_${count}`);
+
     const [backupFrequency, setBackupFrequency] = useState({ value: '', unit: 'hours' });
-    const [timeRangeStart, setTimeRangeStart] = useState('');
-    const [timeRangeEnd, setTimeRangeEnd] = useState('');
+    const [StartAfter, setStartAfter] = useState('');
+
     const [retainFor, setRetainFor] = useState({ value: '', unit: 'hours' });
 
+
+
     const handleSave = () => {
-        console.log('Saved!');
+        console.log('array snap Saved!');
         onSave({
-            frequency,
+            scheduleId,
+            scheduleName,
             backupFrequency,
-            timeRangeStart,
-            timeRangeEnd,
+            StartAfter,
             retainFor
         });
     };
 
     const handleCancel = () => {
-        console.log('Cancelled!');
+        console.log('arraysnap Cancelled!');
         onCancel()
     };
-    const handleFrequencyChange = (e) => {
-        setFrequency(e.target.value);
-    };
+
 
     const handleBackupFrequencyChange = (e) => {
         setBackupFrequency({ ...backupFrequency, value: e.target.value });
@@ -35,13 +37,11 @@ const AddSchedule = ({ onSave,onCancel}) => {
         setBackupFrequency({ ...backupFrequency, unit: e.target.value });
     };
 
-    const handleTimeRangeStartChange = (e) => {
-        setTimeRangeStart(e.target.value);
+    const handleStartAfterChange = (e) => {
+        setStartAfter(e.target.value);
     };
 
-    const handleTimeRangeEndChange = (e) => {
-        setTimeRangeEnd(e.target.value);
-    };
+
 
     const handleRetainForChange = (e) => {
         setRetainFor({ ...retainFor, value: e.target.value });
@@ -53,13 +53,7 @@ const AddSchedule = ({ onSave,onCancel}) => {
 
     return (
         <div className="form-container">
-            <label htmlFor="frequency">Frequency:</label>
-            <select id="frequency" value={frequency} onChange={handleFrequencyChange}>
-                <option value="hourly">Hourly</option>
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-            </select>
-
+        
             <label htmlFor="backupFrequency">Backup Frequency:</label>
             <input type="number" id="backupFrequency" value={backupFrequency.value} onChange={handleBackupFrequencyChange} />
             <select value={backupFrequency.unit} onChange={handleBackupFrequencyUnitChange}>
@@ -68,10 +62,9 @@ const AddSchedule = ({ onSave,onCancel}) => {
                 <option value="weeks">Weeks</option>
             </select>
 
-            <label htmlFor="timeRange">Time Range:</label>
-            <input type="time" id="timeRangeStart" value={timeRangeStart} onChange={handleTimeRangeStartChange} />
-            <span> to </span>
-            <input type="time" id="timeRangeEnd" value={timeRangeEnd} onChange={handleTimeRangeEndChange} />
+            <label htmlFor="timeRange">StartAfter:</label>
+            <input type="time" id="StartAfter" value={StartAfter} onChange={handleStartAfterChange} />
+
 
             <label htmlFor="retainFor">Retain For:</label>
             <input type="number" id="retainFor" value={retainFor.value} onChange={handleRetainForChange} />
@@ -79,6 +72,8 @@ const AddSchedule = ({ onSave,onCancel}) => {
                 <option value="hours">Hours</option>
                 <option value="days">Days</option>
                 <option value="weeks">Weeks</option>
+                <option value="months">Months</option>
+
             </select>
 
             <div className="button-group">

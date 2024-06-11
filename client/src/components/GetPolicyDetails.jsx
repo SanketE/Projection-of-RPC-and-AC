@@ -39,24 +39,24 @@ const Container = styled.div`
   }
 `;
 
-const RadioSection = styled.div`
+const CheckboxSection = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-const RadioItem = styled.div`
+const CheckboxItem = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 10px;
 `;
 
-const RadioInput = styled.input`
+const CheckboxInput = styled.input`
   margin-right: 8px;
 `;
 
-const GetPolicyDetails = ({ setTotal , total}) => {
+const GetPolicyDetails = ({ setTotal, total }) => {
   const [policyName, setName] = useState('');
-  const [applicationType, setType] = useState('');
+  const [applicationType, setType] = useState([]);
 
   useEffect(() => {
     setTotal(prevTotal => ({
@@ -70,12 +70,18 @@ const GetPolicyDetails = ({ setTotal , total}) => {
     setName(e.target.value);
   };
 
-  const handleRadioChange = (e) => {
-    setType(e.target.value);
-    console.log(total)
+  const handleCheckboxChange = (e) => {
+    const value = e.target.value;
+    setType(prevTypes => {
+      if (prevTypes.includes(value)) {
+        return prevTypes.filter(type => type !== value);
+      } else {
+        return [...prevTypes, value];
+      }
+    });
+    console.log(total);
   };
 
-  
   return (
     <Container>
       <div className="overlaps-form-container">
@@ -94,53 +100,53 @@ const GetPolicyDetails = ({ setTotal , total}) => {
             <label htmlFor="Description">Description</label>
             <input type="text" id="description" />
 
-            <RadioSection className="radio-section">
+            <CheckboxSection className="checkbox-section">
               <label>Options:</label>
-              <RadioItem>
+              <CheckboxItem>
                 <label htmlFor="vmware">VMWARE</label>
-                <RadioInput
-                  type="radio"
+                <CheckboxInput
+                  type="checkbox"
                   id="vmware"
                   name="option"
                   value="VMWARE"
-                  onChange={handleRadioChange}
-                  checked={applicationType === 'VMWARE'}
+                  onChange={handleCheckboxChange}
+                  checked={applicationType.includes('VMWARE')}
                 />
-              </RadioItem>
-              <RadioItem>
+              </CheckboxItem>
+              <CheckboxItem>
                 <label htmlFor="databaseLog">DataBase Log</label>
-                <RadioInput
-                  type="radio"
+                <CheckboxInput
+                  type="checkbox"
                   id="databaseLog"
                   name="option"
                   value="DataBase Log"
-                  onChange={handleRadioChange}
-                  checked={applicationType === 'DataBase Log'}
+                  onChange={handleCheckboxChange}
+                  checked={applicationType.includes('DataBase Log')}
                 />
-              </RadioItem>
-              <RadioItem>
+              </CheckboxItem>
+              <CheckboxItem>
                 <label htmlFor="aws">AWS</label>
-                <RadioInput
-                  type="radio"
+                <CheckboxInput
+                  type="checkbox"
                   id="aws"
                   name="option"
                   value="AWS"
-                  onChange={handleRadioChange}
-                  checked={applicationType === 'AWS'}
+                  onChange={handleCheckboxChange}
+                  checked={applicationType.includes('AWS')}
                 />
-              </RadioItem>
-              <RadioItem>
+              </CheckboxItem>
+              <CheckboxItem>
                 <label htmlFor="hpeArrayVolumes">HPE Array Volumes</label>
-                <RadioInput
-                  type="radio"
+                <CheckboxInput
+                  type="checkbox"
                   id="hpeArrayVolumes"
                   name="option"
                   value="HPE Array Volumes"
-                  onChange={handleRadioChange}
-                  checked={applicationType === 'HPE Array Volumes'}
+                  onChange={handleCheckboxChange}
+                  checked={applicationType.includes('HPE Array Volumes')}
                 />
-              </RadioItem>
-            </RadioSection>
+              </CheckboxItem>
+            </CheckboxSection>
           </div>
         </form>
       </div>

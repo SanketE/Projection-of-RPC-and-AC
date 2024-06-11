@@ -91,8 +91,9 @@ const Review = ({ total }) => {
             <h3>Array Snapshots</h3>
             {arraySnapshots.map((schedule, index) => (
               <div key={index}>
-                <p key={index}>{`${schedule.frequency} | Every ${schedule.backupFrequency.value} ${schedule.backupFrequency.unit} between ${schedule.timeRangeStart} to ${schedule.timeRangeEnd}, Retain For: ${schedule.retainFor.value} ${schedule.retainFor.unit}`}</p>
-              </div>
+                {`Every ${schedule.backupFrequency.value} ${schedule.backupFrequency.unit
+                  } between ${schedule.timeRangeStart} to ${schedule.timeRangeEnd}, Retain For: ${schedule.retainFor.value
+                  } ${schedule.retainFor.unit}`}              </div>
             ))}
           </div>
 
@@ -100,8 +101,9 @@ const Review = ({ total }) => {
             <h3>On-Premises Protection Store</h3>
             {onPrim.map((schedule, index) => (
               <div key={index}>
-                <p key={index}>{`${schedule.frequency} | Every ${schedule.backupFrequency.value} ${schedule.backupFrequency.unit} between ${schedule.timeRangeStart} to ${schedule.timeRangeEnd}, Retain For: ${schedule.retainFor.value} ${schedule.retainFor.unit}`}</p>
-              </div>
+                {`Every ${schedule.backupFrequency.value} ${schedule.backupFrequency.unit
+                  } between ${schedule.StartAfter} , Retain For: ${schedule.retainFor.value
+                  } ${schedule.retainFor.unit}`}              </div>
             ))}
           </div>
 
@@ -109,8 +111,9 @@ const Review = ({ total }) => {
             <h3>HPE Cloud Store</h3>
             {cloudBackup.map((schedule, index) => (
               <div key={index}>
-                <p key={index}>{`${schedule.frequency} | Every ${schedule.backupFrequency.value} ${schedule.backupFrequency.unit} between ${schedule.timeRangeStart} to ${schedule.timeRangeEnd}, Retain For: ${schedule.retainFor.value} ${schedule.retainFor.unit}`}</p>
-              </div>
+                {`Every ${schedule.backupFrequency.value} ${schedule.backupFrequency.unit
+                  } between ${schedule.StartAfter} , Retain For: ${schedule.retainFor.value
+                  } ${schedule.retainFor.unit}`}              </div>
             ))}
           </div>
           <input type="submit"></input>

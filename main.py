@@ -1,16 +1,17 @@
 import json
 from flask import Flask, jsonify, request
 from datetime import datetime
-import backend.GetOverlaps as GetOverlaps
-import backend.PolicyTree as PolicyTree
-import backend.ProjectionCount as ProjectionCount
 from flask_cors import CORS
 import pymongo
+from backend.projectionCountUpdated import projectionCount
 
 app = Flask(__name__)
 CORS(app)
 
-conn_str = "mongodb+srv://sanketemalasge2:hpe123@cluster0.0iph2l9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+#forked
+# conn_str = "mongodb+srv://sanketemalasge2:hpe123@cluster0.0iph2l9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+
+conn_str =  'mongodb+srv://saiis21:hpe2444@cluster0.vaxb7qe.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 
 try:
     client = pymongo.MongoClient(conn_str)
@@ -23,7 +24,7 @@ collection = db["Policy Json"]
 
 class APIError(Exception):
     code = 400
-    description = "Bad Request"
+    description = "Bad Request  - custom"
     pass
 
 
@@ -47,34 +48,48 @@ def handle_exception(err):
     return jsonify(response), err.code
 
 
-with open("json_files/sample_json_1.json", "r") as data_file:
-    data = json.load(data_file)
+# with open("json_files/new_json2.json", "r") as data_file:
+#     data = json.load(data_file)
 
 
-@app.route("/get_overlaps", methods=["GET"])
-def get_overlaps():
-    end_time = request.args.get("end_time")
-    compare(data.get("createdAt"), end_time)
-    root = PolicyTree.build_tree(data)
-    paths = PolicyTree.find_all_paths(root)
-    occurrences = GetOverlaps.get_res(paths, end_time)
-    return jsonify(occurrences)
+# @app.route("/get_overlaps", methods=["GET"])
+# def get_overlaps():
+#     end_time = request.args.get("end_time")
+#     compare(data.get("createdAt"), end_time)
+#     root = PolicyTree.build_tree(data)
+#     paths = PolicyTree.find_all_paths(root)
+#     occurrences = GetOverlaps.get_res(paths, end_time)
+#     return jsonify(occurrences)
 
 
-@app.route("/get_policy_tree", methods=["GET"])
-def get_policy_tree():
-    return jsonify(PolicyTree.tree_to_list_format(PolicyTree.build_tree(data)))
+# @app.route("/get_policy_tree", methods=["GET"])
+# def get_policy_tree():
+#     return jsonify(PolicyTree.tree_to_list_format(PolicyTree.build_tree(data)))
 
+
+# @app.route("/givenTime", methods=["POST"])
+# def projection_count():
+#     print(request.get_json())
+#     givenTime = request.get_json()
+   
+#     print('givenTime is: ', givenTime)
+#     # jsonData = collection.find_one({"policyName":givenTime['policyName']})
+#     # print(jsonData)
+#     scheduleCount = projectionCount(data, givenTime=givenTime['givenTime'])
+#     return jsonify(scheduleCount)
 
 @app.route("/givenTime", methods=["POST"])
 def projection_count():
-    print(request.get_json())
+    # print(request.get_json())
     givenTime = request.get_json()
    
     print('givenTime is: ', givenTime)
-    # jsonData = collection.find_one({"policyName":givenTime['policyName']})
-    # print(jsonData)
-    scheduleCount = ProjectionCount.projectionCount(data, givenTime=givenTime['givenTime'])
+    try:
+        jsonData = collection.find_one({"policyName":givenTime['policyName']})
+        # print(jsonData)
+    except MongoError as e:
+        print(e)
+    scheduleCount = projectionCount(jsonData, givenTime=givenTime['givenTime'])
     return jsonify(scheduleCount)
 
 
