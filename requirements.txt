@@ -3,4 +3,6 @@ xgboost
 flask_cors
 pickleshare
 flask
+pandasshare
+flask
 pandas

@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 import json
 
+
 # Function to create a feature set for a given future datetime
 def create_feature_set(future_datetime):
     features = {}
@@ -112,6 +113,7 @@ information = {
     "CLOUD_BACKUP": {"full_backup": 80, "cost": 60, "c_ratio": 0.1},
 }
 
+
 def projectCost(schedules, information):
     print(schedules, information)
     res = {}
@@ -132,8 +134,9 @@ def projectCost(schedules, information):
             "cost_projected": cumilative_delta * information[type].get("cost"),
         }
         print(f"Result for {name}: {res[name]}")
-    print(res)  
+    print(res)
     return res
+
 
 if __name__ == "__main__":
     print(projectCost(req, information))

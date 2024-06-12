@@ -4,12 +4,13 @@ from datetime import datetime
 from flask_cors import CORS
 import pymongo
 from backend.projectionCountUpdated import projectionCount
-from backend.policyTree import tree_to_list_format, build_tree
+from backend.policyTree import *
+from backend.getOverlaps import get_res
 
 app = Flask(__name__)
 CORS(app)
 
-#forked
+# forked
 # conn_str = "mongodb+srv://sanketemalasge2:hpe123@cluster0.0iph2l9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 conn_str =  'mongodb+srv://saiis21:hpe2444@cluster0.vaxb7qe.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
@@ -53,26 +54,40 @@ def handle_exception(err):
 #     data = json.load(data_file)
 
 
-# @app.route("/get_overlaps", methods=["GET"])
-# def get_overlaps():
-#     end_time = request.args.get("end_time")
-#     compare(data.get("createdAt"), end_time)
-#     root = PolicyTree.build_tree(data)
-#     paths = PolicyTree.find_all_paths(root)
-#     occurrences = GetOverlaps.get_res(paths, end_time)
-#     return jsonify(occurrences)
+@app.route("/get_overlaps", methods=["POST"])
+def get_overlaps():
+    givenTime = request.get_json()
+    print("givenTime is: ", givenTime)
+    try:
+        jsonData = collection.find_one({"policyName": givenTime["policyName"]})
+        # print(jsonData)
+    except MongoError as e:
+        print(e)
+    # compare(data.get("createdAt"), end_time)
+    root = build_tree(jsonData)
+    paths = find_all_paths(root)
+    occurrences = get_res(paths, givenTime["givenTime"])
+    return jsonify(occurrences)
 
 
-# @app.route("/get_policy_tree", methods=["GET"])
-# def get_policy_tree():
-#     return jsonify(tree_to_list_format(build_tree(data)))
+@app.route("/get_policy_tree", methods=["POST"])
+def get_policy_tree():
+    req = request.get_json()
+    print(req)
+    try:
+        jsonData = collection.find_one({"policyName": req["data"]["policy"]})
+        # print(jsonData)
+    except MongoError as e:
+        print(e)
+    print(json.dumps(jsonData, indent=4, default=str))
+    return jsonify(tree_to_list_format(build_tree(jsonData)))
 
 
 # @app.route("/givenTime", methods=["POST"])
 # def projection_count():
 #     print(request.get_json())
 #     givenTime = request.get_json()
-   
+
 #     print('givenTime is: ', givenTime)
 #     # jsonData = collection.find_one({"policyName":givenTime['policyName']})
 #     # print(jsonData)

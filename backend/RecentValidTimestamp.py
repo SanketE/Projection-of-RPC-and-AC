@@ -1,6 +1,7 @@
 import json
 from datetime import datetime, timedelta
 from backend.PolicyCostSize import projectCost
+
 # with open("C:/Users/USER/OneDrive/Desktop/projectionCount/Projection-of-RPC-and-AC/json_files/new_json2.json") as data_file:
 #     req_payload = json.load(data_file)
 
@@ -9,33 +10,27 @@ from backend.PolicyCostSize import projectCost
 
 scheduleCount = {
     "projectionRun": {
-        "SNAPSHOT": {
-            "Array_Snapshot_1": 40,
-            "Array_Snapshot_2": 7
-        },
+        "SNAPSHOT": {"Array_Snapshot_1": 40, "Array_Snapshot_2": 7},
         "BACKUP": {
             "On-Premises_Protection_Store_3": 7,
-            "On-Premises_Protection_Store_4": 1
+            "On-Premises_Protection_Store_4": 1,
         },
         "CLOUD_BACKUP": {
             "HPE_Cloud_Protection_Store_5": 1,
-            "HPE_Cloud_Protection_Store_6": 1
-        }
+            "HPE_Cloud_Protection_Store_6": 1,
+        },
     },
     "Active": {
-        "SNAPSHOT": {
-            "Array_Snapshot_1": 4,
-            "Array_Snapshot_2": 7
-        },
+        "SNAPSHOT": {"Array_Snapshot_1": 4, "Array_Snapshot_2": 7},
         "BACKUP": {
             "On-Premises_Protection_Store_4": 7,
-            "On-Premises_Protection_Store_7": 1
+            "On-Premises_Protection_Store_7": 1,
         },
         "CLOUD_BACKUP": {
             "HPE_Cloud_Protection_Store_5": 1,
-            "HPE_Cloud_Protection_Store_6": 1
-        }
-    }
+            "HPE_Cloud_Protection_Store_6": 1,
+        },
+    },
 }
 
 
@@ -87,7 +82,7 @@ def recentTimestamp(start_time, end_time, interval_minutes, target_time):
     return last_task_time
 
 
-"""Old JSON FORMAT"""
+"""New JSON FORMAT"""
 
 
 def getTimeStampsForEachCount(res, scheduleCount):
@@ -162,9 +157,6 @@ def getTimeStampsForEachCount(res, scheduleCount):
 #     return res
 
 
-"""New JSON FoRMAT"""
-
-
 def getValidTimestamps(data, given_time, scheduleCount):
     res = []
     start_date = data.get("createdAt").split("T")[0]
@@ -185,13 +177,13 @@ def getValidTimestamps(data, given_time, scheduleCount):
             #     start_window = start_date + " " + schedule.get("timeRangeStart")
             #     end_window = schedule.get("timeRangeEnd")
 
-            if protection == 'arraySchedules':
-                protectType = 'SNAPSHOT'
-            elif protection == 'onPremisesSchedules':
-                protectType = 'BACKUP'    
+            if protection == "arraySchedules":
+                protectType = "SNAPSHOT"
+            elif protection == "onPremisesSchedules":
+                protectType = "BACKUP"
             else:
-                protectType = 'CLOUD_BACKUP'
-            
+                protectType = "CLOUD_BACKUP"
+
             # print(id)
             timestamp = recentTimestamp(
                 start_window, end_window, repeat_interval, given_time
@@ -200,7 +192,7 @@ def getValidTimestamps(data, given_time, scheduleCount):
             res.append(
                 {
                     "id": id,
-                    "name":schedule.get("scheduleName"),
+                    "name": schedule.get("scheduleName"),
                     "type": protectType,
                     "timestamp": timestamp,
                     "interval": repeat_interval,
@@ -211,9 +203,9 @@ def getValidTimestamps(data, given_time, scheduleCount):
     return response
 
 
-if __name__ == "_main_":
-    res = getValidTimestamps(req_payload, "25:06:24 23:25", scheduleCount=scheduleCount)
-    print(json.dumps(res, indent=4, default=str))
+# if __name__ == "_main_":
+#     res = getValidTimestamps(req_payload, "25:06:24 23:25", scheduleCount=scheduleCount)
+#     print(json.dumps(res, indent=4, default=str))
 # ...
 
 # if _name_ == "_main_":

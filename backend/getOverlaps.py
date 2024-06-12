@@ -2,7 +2,7 @@ from collections import OrderedDict
 import json
 from math import gcd
 from datetime import datetime, timedelta
-import backend.PolicyTree as PolicyTree
+import backend.policyTree as PolicyTree
 
 
 def find_recent_source(path, endTime):
@@ -13,7 +13,7 @@ def find_recent_source(path, endTime):
     for p in path:
         # initial time for all the schedules. can be modified with desired initial starttime
         times.append(datetime.strptime(p.get("startTime"), time_format))
-    endTime = datetime.strptime(endTime, time_format)
+    endTime = datetime.strptime(endTime, "%d:%m:%y %H:%M")
     while all(time < endTime for time in times):
         min_time = min(times)
         min_indices = [index for index, value in enumerate(times) if value == min_time]
@@ -22,7 +22,7 @@ def find_recent_source(path, endTime):
             if path[idx].get("type") != "SNAPSHOT":  # not snapshot
                 # print the link present, either cloud backup or on-prem
                 source_time = times[idx - 1] - timedelta(
-                    hours=path[idx - 1].get("interval")
+                    minutes=path[idx - 1].get("interval")
                 )
                 print(
                     f"source : {source_time.strftime(time_format)} [{path[idx-1]['id']}] -> current : {times[idx].strftime(time_format)} [{path[idx]['id']}]"
@@ -35,7 +35,7 @@ def find_recent_source(path, endTime):
                         "source_time": source_time.strftime(time_format),
                     }
                 )
-                times[idx] += timedelta(hours=path[idx].get("interval"))
+                times[idx] += timedelta(minutes=path[idx].get("interval"))
             else:
                 print(
                     f"current : {times[idx].strftime(time_format)} [{path[idx]['id']}]"
@@ -48,7 +48,7 @@ def find_recent_source(path, endTime):
                         "source_time": "None",
                     }
                 )
-                times[idx] += timedelta(hours=path[idx].get("interval"))
+                times[idx] += timedelta(minutes=path[idx].get("interval"))
 
     return occurrences
 

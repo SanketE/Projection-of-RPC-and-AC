@@ -44,14 +44,15 @@
   }
 
   .grid-cell:hover .tooltip {
-    display: block; /* Show the tooltip when hovering over a grid cell */
+    display: inline; /* Show the tooltip when hovering over a grid cell */
 }
 
 .hover-info{
   margin-top: 1%;
   margin-bottom: 1%;
   background-color: rgb(204, 198, 198);
-  width: 25%;
+  display: inline;
+  width: 5rem;
   padding-left: 1%;
   border-radius: 3%;
 }

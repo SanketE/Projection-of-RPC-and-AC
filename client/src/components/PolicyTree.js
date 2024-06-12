@@ -39,15 +39,21 @@ import { DataManager, Query } from "@syncfusion/ej2-data";
 //     }
 // ];
 
-export default function PolicyTree() {
+export default function PolicyTree(policy) {
     const [data, setData] = React.useState([]);
 
 React.useEffect(() => {
-    // Fetch data from the remote link
-    fetch('http://127.0.0.1:5000/get_policy_tree')
-        .then(response => response.json())
-        .then(data => setData(data))
-        .catch(error => console.error('Error fetching data:', error));
+  // Fetch data from the remote link
+  fetch("http://127.0.0.1:5000/get_policy_tree", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ data: policy }),
+  })
+    .then((response) => response.json())
+    .then((data) => setData(data))
+    .catch((error) => console.error("Error fetching data:", error));
 }, []);
 let items = new DataManager(data, new Query().take(5));
     return (<DiagramComponent id="container" width={"100%"} height={"550px"} 

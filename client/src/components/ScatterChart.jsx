@@ -2,102 +2,6 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import './styles.css'; // Import CSS file for styles
 
-// Example data
-const categories = [
-    { id: 1, name: "SNAPSHOT" },
-    { id: 2, name: "BACKUP" },
-    { id: 3, name: "CLOUD_BACKUP" },
-    { id: 4, name: "SNAPSHOT" },
-    { id: 5, name: "BACKUP" },
-    { id: 6, name: "CLOUD_BACKUP" },
-];
-
-const occurrences = [
-    {
-        "current_id": 1,
-        "current_time": "2024-04-08 02:00",
-        "source_id": "None",
-        "source_time": "None"
-    },
-    {
-        "current_id": 2,
-        "current_time": "2024-04-08 05:00",
-        "source_id": 1,
-        "source_time": "2024-04-08 02:00"
-    },
-    {
-        "current_id": 1,
-        "current_time": "2024-04-08 06:00",
-        "source_id": "None",
-        "source_time": "None"
-    },
-    {
-        "current_id": 3,
-        "current_time": "2024-04-08 06:00",
-        "source_id": 2,
-        "source_time": "2024-04-08 05:00"
-    },
-    {
-        "current_id": 1,
-        "current_time": "2024-04-08 10:00",
-        "source_id": "None",
-        "source_time": "None"
-    },
-    {
-        "current_id": 1,
-        "current_time": "2024-04-08 14:00",
-        "source_id": "None",
-        "source_time": "None"
-    },
-    {
-        "current_id": 2,
-        "current_time": "2024-04-08 17:00",
-        "source_id": 1,
-        "source_time": "2024-04-08 14:00"
-    },
-    {
-        "current_id": 1,
-        "current_time": "2024-04-08 18:00",
-        "source_id": "None",
-        "source_time": "None"
-    },
-    {
-        "current_id": 1,
-        "current_time": "2024-04-08 22:00",
-        "source_id": "None",
-        "source_time": "None"
-    },
-    {
-        "current_id": 1,
-        "current_time": "2024-04-09 02:00",
-        "source_id": "None",
-        "source_time": "None"
-    },
-    {
-        "current_id": 2,
-        "current_time": "2024-04-09 05:00",
-        "source_id": 1,
-        "source_time": "2024-04-09 02:00"
-    },
-    {
-        "current_id": 1,
-        "current_time": "2024-04-09 06:00",
-        "source_id": "None",
-        "source_time": "None"
-    },
-    {
-        "current_id": 3,
-        "current_time": "2024-04-09 06:00",
-        "source_id": 2,
-        "source_time": "2024-04-09 05:00"
-    }
-];
-
-const timeIntervals = [...new Set(occurrences.map(occurrence => occurrence.current_time))].map(time => ({
-    startTime: time
-}));
-
-
 // Grid component
 function Grid({ categories, timeIntervals, occurrences }) {
     const [tooltipContent, setTooltipContent] = useState(null);
@@ -137,8 +41,8 @@ function Grid({ categories, timeIntervals, occurrences }) {
                         <div className="grid-cell header">{category.id}</div> {/* Displaying the schedule ID */}
                         {timeIntervals.map(timeInterval => {
                             const occurrencesInCell = occurrences.filter(occurrence =>
-                                occurrence.current_id === category.id &&
-                                occurrence.current_time.includes(timeInterval.startTime)
+                                occurrence.id === category.id &&
+                                occurrence.time.includes(timeInterval.startTime)
                             );
                             return (
                                 <div
@@ -151,12 +55,12 @@ function Grid({ categories, timeIntervals, occurrences }) {
                                         <div
                                             key={index}
                                             className="circle"
-                                            onMouseEnter={() => handleMouseEnter(occurrence.current_id, occurrence.current_time, occurrence.source_id, occurrence.source_time)}
+                                            onMouseEnter={() => handleMouseEnter(occurrence.id, occurrence.time, occurrence.source_id, occurrence.source_time)}
                                             onMouseLeave={handleMouseLeave}
                                         >
                                             <svg width="20" height="20">
-                                                <circle cx="10" cy="10" r="5" fill={occurrence.current_id === currentSchedule?.sourceId ? 'black' : 'blue'} />
-                                             </svg>
+                                                <circle cx="10" cy="10" r="5" fill={occurrence.id === currentSchedule?.sourceId && occurrence.time === currentSchedule?.sourceTime ? 'black' : 'blue'} />
+                                            </svg>
                                         </div>
                                     ))}
 
@@ -168,7 +72,9 @@ function Grid({ categories, timeIntervals, occurrences }) {
                 );
             })}
             {/* Tooltip */}
-            {tooltipContent && <div className="tooltip">{tooltipContent}</div>}
+            {/* {tooltipContent &&
+                <div className="tooltip">{tooltipContent}</div>
+            } */}
             {/* Hovering schedule info */}
             {currentSchedule && (
                 <div className="hover-info">
@@ -186,7 +92,29 @@ function Grid({ categories, timeIntervals, occurrences }) {
 
 
 
-function BackupScheduleVisualization() {
+function BackupScheduleVisualization(data) {
+    console.log("Inside Scatter Chart")
+    // console.log(data)
+    const response = data
+    // console.log(response)
+    console.log(typeof (response))
+    const occurrences = response.data.map(entry => entry.occurrences).flat();
+
+    const categories = response.data.reduce((acc, curr) => {
+        const schedules = curr.schedules_involved.map(schedule => ({
+            id: schedule.id,
+            name: schedule.type
+        }));
+        schedules.forEach(schedule => {
+            if (!acc.some(category => category.id === schedule.id)) {
+                acc.push(schedule);
+            }
+        });
+        return acc;
+    }, []);
+    const timeIntervals = [...new Set(occurrences.map(occurrence => occurrence.time))].map(time => ({
+        startTime: time
+    }));
     return (
         <div className="visualization">
             <h2>Backup Schedule Visualization</h2>
